@@ -102,3 +102,4 @@ ENV/
 
 /.idea/
 /.DS_Store
+/tools/lab/kilo/iso/MirantisOpenStack-7.0.iso
