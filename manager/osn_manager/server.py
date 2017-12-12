@@ -13,13 +13,15 @@
 import logging
 import uuid
 
-from pb import event_pb2
-from pb import service_pb2_grpc
+from osn_manager.pb import event_pb2
+from osn_manager.pb import service_pb2_grpc
 
 
 class Server(service_pb2_grpc.ServiceServicer):
+    LOG = logging.getLogger(__name__)
+
     def AddEvent(self, request, context):
         for r in request:
-            logging.debug('AddEvent: data=%s', r.data)
+            self.LOG.debug('AddEvent: data=%s', r.data)
             new_id = uuid.uuid4()
             yield event_pb2.ID(id=str(new_id))

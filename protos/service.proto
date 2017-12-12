@@ -12,9 +12,9 @@
 
 syntax = "proto3";
 
-import "event.proto";
+import "/event.proto";
 
-// The OpenStack Notifications manager definition.
+// The OpenStack Notifications osn_manager definition.
 service Service {
     // Record an Event
     rpc AddEvent(stream events.RawData) returns (stream events.ID);

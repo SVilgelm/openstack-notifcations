@@ -10,10 +10,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pb import event_pb2
+from cliff import lister
 
 
-def add_event(stub, args):
-    response = stub.AddEvent(iter(event_pb2.RawData(data=d)
-                                  for d in args.data))
-    return ''.join(str(r) for r in response)
+class CommandMixin(object):
+    def __init__(self, app, app_args, cmd_name=None):
+        super(CommandMixin, self).__init__(app, app_args, cmd_name)
+        self.stub = None
+
+
+class Lister(CommandMixin, lister.Lister):
+    pass

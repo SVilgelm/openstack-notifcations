@@ -15,14 +15,19 @@
 import argparse
 from concurrent import futures
 import logging
+import os
 import time
 
 import grpc
 
-from pb import service_pb2_grpc
-import server
+from osn_manager.pb import service_pb2_grpc
+from osn_manager import server
 
 _ONE_DAY_IN_SECONDS = 24 * 60 * 60
+
+
+def is_true(value):
+    return value.lower() in ('1', 'on', 'y', 'yes', 'true', 't')
 
 
 def serve(addrport):
@@ -30,13 +35,15 @@ def serve(addrport):
     service_pb2_grpc.add_ServiceServicer_to_server(server.Server(), srv)
     srv.add_insecure_port(addrport)
     srv.start()
+    logging.getLogger(__name__).info('Running on %s', addrport)
     try:
         while True:
             time.sleep(_ONE_DAY_IN_SECONDS)
     except KeyboardInterrupt:
         srv.stop(0)
 
-if __name__ == '__main__':
+
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Debug mode')
@@ -45,8 +52,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     level = logging.INFO
-    if args.debug:
+    if args.debug or is_true(os.environ.get('DEBUG', '')):
         level = logging.DEBUG
     logging.basicConfig(level=level)
     logging.root.name = 'OpenStack Notifications'
     serve(args.addrport)
+
+
+if __name__ == '__main__':
+    main()
